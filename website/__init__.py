@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from flask_login import LoginManager
 
+
 load_dotenv()
 db = SQLAlchemy()
 DB_NAME = os.getenv("DATABASE_NAME")
@@ -24,10 +25,10 @@ def create_app():
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
-    login_manager = LoginManager()
-    login_manager.init_app(app)
+    #    login_manager = LoginManager()
+    #    login_manager.init_app(app)
 
-    from .models import User, Run, TotalRun
+    from .models import User, Run  # , TotalRun
 
     create_database(app)
 
