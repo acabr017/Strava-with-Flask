@@ -5,8 +5,10 @@ from flask_login import current_user
 from dotenv import load_dotenv
 from requests_oauthlib import OAuth2Session
 from . import models, db
-from .models import User
-from pytz import timezone
+from sqlalchemy.sql import func
+
+# from .models import User
+
 
 auth = Blueprint("auth", __name__)
 
@@ -30,7 +32,6 @@ scope = "activity:read_all"
 def strava():
     strava = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
     login_url, state = strava.authorization_url(authorization_url)
-    # session["oauth_state"] = state
     print(f"Login url {login_url}")
     #
     return '<a href="' + login_url + '">Login with Strava</a>'
@@ -50,7 +51,6 @@ def oauth_callback():
     user = models.User.query.filter_by(strava_id=data["athlete"]["id"]).first()
     if not user:
         store_user_in_db(data)
-        # store_tokens_in_db(data)
         get_athlete_activites(data["access_token"])
         return "User Added to Database"
     print(user.id)
@@ -109,3 +109,37 @@ def get_athlete_activites(access_token, per_page=200, page=1):
             )
             db.session.add(activity_record)
             db.session.commit()
+
+
+def get_total_activities(userID: str):
+    totalActivities = models.Run.query.filter_by(owner_id=userID).count()
+    return totalActivities
+
+
+def get_total_distance(userID: str):
+    totalDistance = (
+        db.session.query(func.sum(models.Run.distance))
+        .filter_by(owner_id=userID)
+        .first()
+    )
+    return totalDistance
+
+
+def get_total_time(userID: str):
+    totalTime = (
+        db.session.query(func.sum(models.Run.moving_time))
+        .filter_by(owner_id=userID)
+        .first()
+    )
+    time_as_int = int(totalTime[0])
+    days = time_as_int // 86400
+    hours = (time_as_int // 3600) % 24
+    minutes = (time_as_int // 60) % 60
+    seconds = time_as_int % 60
+    time_output = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
+    return time_output
+
+
+def get_average_speed(userID: str):
+    # average_speed = (db.session.query(func.avg(models.Run.average_speed)).filter_by(owner_id=userID)
+    pass
