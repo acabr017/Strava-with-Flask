@@ -32,9 +32,8 @@ scope = "activity:read_all"
 def strava():
     strava = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
     login_url, state = strava.authorization_url(authorization_url)
-    print(f"Login url {login_url}")
-    #
-    return '<a href="' + login_url + '">Login with Strava</a>'
+    # return '<a href="' + login_url + '">Login with Strava</a>'
+    return render_template("login.html", login_url=login_url)
 
 
 @auth.route("/oauth_callback", methods=["GET"])
@@ -51,10 +50,12 @@ def oauth_callback():
     user = models.User.query.filter_by(strava_id=data["athlete"]["id"]).first()
     if not user:
         store_user_in_db(data)
-        get_athlete_activites(data["access_token"])
-        return "User Added to Database"
-    print(user.id)
-    return "Already in database"
+        flash("User Added to Database")
+    else:
+        flash("User was already in Database")
+    # print(user.id)
+    get_athlete_activites(data["access_token"])
+    return redirect("/")
 
 
 def store_user_in_db(
@@ -86,7 +87,7 @@ def get_athlete_activites(access_token, per_page=200, page=1):
     print(dataset[0]["start_date_local"][:10])
     for activity in dataset:
         date = datetime.datetime.strptime(activity["start_date_local"][:10], "%Y-%m-%d")
-        if activity["type"] == "Run" and date >= datetime.datetime(2022, 1, 1):
+        if activity["type"] == "Run" and date >= datetime.datetime(2023, 1, 1):
             activity_record = models.Run(
                 id=activity["id"],
                 start_date=date,

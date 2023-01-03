@@ -1,23 +1,86 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+        />
+        <title>{% block title %} Title {% endblock %}</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class ="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" id="login" href="/">Home</a>
 
-{% block title %} Log In {% endblock %}
+                    
+                </div>
+            </div>
+        </nav>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+            messages %} {% for category, message in messages %} {% if category ==
+            'error' %}
+            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endif %} {% endfor %} {% endif %} {% endwith %}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <center>
+            <head>
+              <style>
+                .button {
+                  background-color: #fc4c02;
+                  border: none;
+                  color: white;
+                  padding: 20px 34px;
+                  text-align: center;
+                  text-decoration: none;
+                  display: inline-block;
+                  font-size: 20px;
+                  margin: 4px 2px;
+                  cursor: pointer;
+                }
+              </style>
+            </head>
+            <body>
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-strava" viewBox="0 0 16 16">
+                  <path d="M6.731 0 2 9.125h2.788L6.73 5.497l1.93 3.628h2.766L6.731 0zm4.694 9.125-1.372 2.756L8.66 9.125H6.547L10.053 16l3.484-6.875h-2.112z"/>
+                </svg>
+              <a href={{login_url}} class="button">Log In with Strava</a>
+            </body>
+          </center>
 
-{% block content %}
-<form method="POST">
-    <h3 align="center">Log In</h3>
-    <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email"/>
-    </div>
-    <!-- <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input type="firstName" class="form-control" id="firstName" name="firstName" placeholder="Enter first name"/>
-    </div> -->
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"/>
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-{% endblock %}
+        <!-- <script
+            type="text/javascript"
+            src="{{ url_for('static', filename='index.js') }}"
+        ></script> -->
+    </body>
+</html>
+<html>
+
+</html>
